@@ -156,29 +156,29 @@ The project uses the **Healthcare Stroke Dataset**, which contains patient healt
 
 ## 📸 Screenshots
 
-### Login Page
-
-(Add Screenshot)
-
 ### Signup Page
 
-(Add Screenshot)
+![Signup Page](screenshots/signup.png)
+
+### Login Page
+
+![Login Page](screenshots/login.png)
 
 ### Dashboard
 
-(Add Screenshot)
+![Dashboard Page](screenshots/dashboard.png)
 
 ### Prediction Result
 
-(Add Screenshot)
+![Prediction Page](screenshots/prediction.png)
 
 ### Prediction History
 
-(Add Screenshot)
+![History Page](screenshots/history.png)
 
 ### PDF Report
 
-(Add Screenshot)
+![Report Page](screenshots/report.png)
 
 ---
 
