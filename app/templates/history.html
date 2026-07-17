@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Prediction History</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    margin: 0;
+    color: white;
+}
+
+/* 🔥 HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+}
+
+/* 🔥 TABLE CONTAINER */
+.table-container {
+    margin: 30px auto;
+    width: 90%;
+}
+
+/* 🔥 TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    color: black;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* TABLE CELLS */
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+/* HEADER STYLE */
+th {
+    background: #667eea;
+    color: white;
+}
+
+/* 🔥 ROW HOVER */
+tr:hover {
+    background: #f5f5f5;
+}
+
+/* 🔥 RISK COLORS */
+.high {
+    color: red;
+    font-weight: bold;
+}
+
+.low {
+    color: green;
+    font-weight: bold;
+}
+
+/* 🔥 BUTTONS */
+button {
+    padding: 10px 15px;
+    margin: 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* BUTTON COLORS */
+.back-btn { background: #ff7b54; color: white; }
+.clear-btn { background: #e53935; color: white; }
+.pdf-btn { background: #3f51b5; color: white; }
+.logout-btn { background: #555; color: white; }
+
+/* 🔥 NO DATA MESSAGE */
+.no-data {
+    margin-top: 40px;
+    font-size: 18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 🔥 HEADER -->
+<div class="header">
+    <h2>📊 Prediction History</h2>
+
+    <div>
+        <a href="/download_report">
+            <button class="pdf-btn">📄 Download Report</button>
+        </a>
+
+        <a href="/logout">
+            <button class="logout-btn">🚪 Logout</button>
+        </a>
+    </div>
+</div>
+
+<!-- 🔥 TABLE -->
+<div class="table-container">
+
+{% if data and data|length > 1 %}
+<table>
+
+<tr>
+    <th>Age</th>
+    <th>BP</th>
+    <th>Heart Disease</th>
+    <th>Glucose</th>
+    <th>BMI</th>
+    <th>Risk</th>
+</tr>
+
+{% for row in data[1:]|reverse %}
+<tr>
+    <td>{{ row[0] }}</td>
+    <td>{{ row[1] }}</td>
+    <td>{{ row[2] }}</td>
+    <td>{{ row[3] }}</td>
+    <td>{{ row[4] }}</td>
+
+    {% if 'High' in row[5] %}
+        <td class="high">{{ row[5] }}</td>
+    {% else %}
+        <td class="low">{{ row[5] }}</td>
+    {% endif %}
+</tr>
+{% endfor %}
+
+</table>
+
+{% else %}
+<p class="no-data">No prediction history available.</p>
+{% endif %}
+
+</div>
+
+<!-- 🔥 ACTION BUTTONS -->
+<div style="text-align:center;">
+    <a href="/">
+        <button class="back-btn">⬅ Back to Dashboard</button>
+    </a>
+
+    <form action="/clear_history" method="post" style="display:inline;">
+        <button class="clear-btn">🗑 Clear History</button>
+    </form>
+</div>
+
+</body>
+</html>
+

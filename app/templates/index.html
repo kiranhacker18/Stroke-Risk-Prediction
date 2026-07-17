@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Stroke Risk Prediction</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    margin: 0;
+    color: white;
+}
+
+/* GLOBAL FIX */
+* { box-sizing: border-box; }
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+}
+
+/* CENTER FORM */
+.center-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+/* MAIN LAYOUT */
+.main-container {
+    display: flex;
+    padding: 30px;
+    gap: 30px;
+}
+
+/* FORM */
+.form-section {
+    width: 30%;
+    min-width: 300px;
+}
+
+.form-box {
+    background: rgba(255,255,255,0.12);
+    padding: 22px;
+    width: 320px;
+    border-radius: 15px;
+}
+
+/* LABEL */
+label {
+    font-size: 13px;
+    margin-top: 8px;
+    display: block;
+}
+
+/* INPUTS */
+input, select {
+    width: 100%;
+    height: 38px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: none;
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* BUTTONS */
+button {
+    width: 100%;
+    height: 38px;
+    margin-top: 10px;
+    background: #ff7b54;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.history-btn { background: #4CAF50; }
+.logout-btn { background: #e53935; width: auto; padding: 8px 15px; }
+.pdf-btn { background: #3f51b5; }
+
+/* RESULT */
+.result-section {
+    width: 70%;
+}
+
+/* CARDS */
+.card {
+    background: white;
+    color: black;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+/* GRAPH */
+.graph-img {
+    width: 380px;
+    display: block;
+    margin: 0 auto;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <h2>🧠 Stroke Risk Prediction</h2>
+
+    <div>
+        <a href="/download_report">
+            <button class="pdf-btn">📄 Download Report</button>
+        </a>
+
+        <a href="/logout">
+            <button class="logout-btn">🚪 Logout</button>
+        </a>
+    </div>
+</div>
+
+{% if not prediction_text %}
+<!-- CENTER FORM -->
+<div class="center-layout">
+    <div class="form-box">
+
+        <form action="/predict" method="post">
+
+        <label>Patient Name</label>
+        <input type="text" name="patient_name" required>
+
+        <label>Phone Number</label>
+        <input type="text" name="phone" required>
+
+        <label>Age</label>
+        <input type="number" name="age" required>
+
+        <label>Blood Pressure</label>
+        <select name="bp_category">
+            <option value="">Select</option>
+            <option value="low">Low</option>
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+        </select>
+
+        <label>Heart Disease</label>
+        <select name="heart_disease">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+
+        <label>Glucose Level</label>
+        <input type="number" name="avg_glucose_level">
+
+        <label>BMI</label>
+        <input type="number" name="bmi">
+
+        <button type="submit">Predict</button>
+
+        </form>
+
+        <a href="/history">
+            <button class="history-btn">📊 View History</button>
+        </a>
+
+    </div>
+</div>
+
+{% else %}
+<!-- LEFT + RIGHT -->
+<div class="main-container">
+
+    <!-- LEFT FORM -->
+    <div class="form-section">
+        <div class="form-box">
+
+        <form action="/predict" method="post">
+
+        <label>Patient Name</label>
+        <input type="text" name="patient_name" value="{{ patient_name }}">
+
+        <label>Phone Number</label>
+        <input type="text" name="phone" value="{{ phone }}">
+
+        <label>Age</label>
+        <input type="number" name="age" value="{{ age }}">
+
+        <label>Blood Pressure</label>
+        <select name="bp_category">
+            <option value="low" {% if bp_category=='low' %}selected{% endif %}>Low</option>
+            <option value="normal" {% if bp_category=='normal' %}selected{% endif %}>Normal</option>
+            <option value="high" {% if bp_category=='high' %}selected{% endif %}>High</option>
+        </select>
+
+        <label>Heart Disease</label>
+        <select name="heart_disease">
+            <option value="0" {% if heart_disease=='0' %}selected{% endif %}>No</option>
+            <option value="1" {% if heart_disease=='1' %}selected{% endif %}>Yes</option>
+        </select>
+
+        <label>Glucose Level</label>
+        <input type="number" name="avg_glucose_level" value="{{ glucose }}">
+
+        <label>BMI</label>
+        <input type="number" name="bmi" value="{{ bmi }}">
+
+        <button type="submit">Predict</button>
+
+        </form>
+
+        <a href="/history">
+            <button class="history-btn">📊 View History</button>
+        </a>
+
+        </div>
+    </div>
+
+    <!-- RIGHT RESULT -->
+    <div class="result-section">
+
+        <div class="card">
+            <h2>{{ prediction_text }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>📊 Prediction Graph</h3>
+            <img src="{{ url_for('static', filename='prediction.png') }}" class="graph-img">
+        </div>
+
+        <div class="card">
+            <h3>🧠 Risk Explanation</h3>
+            <p>{{ confidence_msg }}</p>
+        </div>
+
+        <div class="card">
+            <h3>🏥 Recommendation</h3>
+            <p>{{ doctor_msg }}</p>
+        </div>
+
+    </div>
+
+</div>
+{% endif %}
+
+</body>
+</html>
+
